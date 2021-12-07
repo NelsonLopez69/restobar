@@ -99,7 +99,7 @@ const OrderScreen = ({ history }) => {
                             <button className="btn btn-success btn-lg"
                             onClick ={() => deleteDelivery(order.id)}>
                                 
-                                <i className="fas fa-edit" /> Eliminar
+                                <i className="fas fa-edit" /> Entregado
                             </button>
                         </Link>
                     </tr>
