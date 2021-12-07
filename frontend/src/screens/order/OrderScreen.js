@@ -58,8 +58,8 @@ const OrderScreen = ({ history }) => {
         dispatch(updateOrderToPaid(updatedOrder));
         let filtered = ords.filter((item) => item.id !== ids)
         setOrds(filtered)
-       // orders = newList
         
+        window.location.reload(false);
         //Hacer un reset y luego un filter remove
     }
 
@@ -97,7 +97,7 @@ const OrderScreen = ({ history }) => {
 
                         <Link to="/order">
                             <button className="btn btn-success btn-lg"
-                            onClick ={() =>deleteDelivery(order.id)}>
+                            onClick ={() => deleteDelivery(order.id)}>
                                 
                                 <i className="fas fa-edit" /> Eliminar
                             </button>
