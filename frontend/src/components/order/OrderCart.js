@@ -83,8 +83,8 @@ const OrderCart = ({ productsInOrder, setProductsInOrder }) => {
                         <th className="d-none d-sm-table-cell"></th>
                         <th>Producto</th>
                         <th>Cantidad</th>
-                        <th></th>
                         <th>Total</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>{renderCart()}</tbody>
