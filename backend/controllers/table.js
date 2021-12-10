@@ -17,7 +17,7 @@ exports.createTable = asyncHandler(async (req, res) => {
 //@route    GET /api/tables
 //@access   Private/user
 exports.getTables = asyncHandler(async (req, res) => {
-    const pageSize = 5;
+    const pageSize = 10;
     const page = Number(req.query.pageNumber) || 1;
     let count;
 

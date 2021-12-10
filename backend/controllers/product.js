@@ -23,7 +23,7 @@ exports.createProduct = asyncHandler(async (req, res) => {
 //@route    GET /api/products
 //@access   Private/user
 exports.getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 5;
+    const pageSize = 10;
     const page = Number(req.query.pageNumber) || 1;
     let products;
     let count;

@@ -45,10 +45,13 @@ const OrderScreen = ({ history }) => {
         </Link>
     );
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+     }
+
 
     async function deleteDelivery (ids)  {
-       // e.preventDefault();
-       console.log("res"+ords.length )
+      // e.preventDefault();
        console.log("resB: "+orders.length )
 
         const updatedOrder = {
@@ -58,8 +61,12 @@ const OrderScreen = ({ history }) => {
         dispatch(updateOrderToPaid(updatedOrder));
         let filtered = ords.filter((item) => item.id !== ids)
         setOrds(filtered)
+
+        sleep(800).then(() => {
+            window.location.reload(false);
+
+        })
         
-        window.location.reload(false);
         //Hacer un reset y luego un filter remove
     }
 
