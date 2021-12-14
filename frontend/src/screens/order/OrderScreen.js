@@ -8,6 +8,9 @@ import DataTableLoader from "../../components/loader/DataTableLoader";
 import Search from "../../components/Search";
 import LoaderHandler from "../../components/loader/LoaderHandler";
 import Pagination from "../../components/Pagination";
+import axios from "axios";
+
+
 
 import {
     listOrderDetails,
@@ -22,7 +25,8 @@ const OrderScreen = ({ history }) => {
     const [keyword, setKeyword] = useState("");
 
     const dispatch = useDispatch();
-
+    const [ listening, setListening ] = useState(false);
+    const BACKEND_IP='192.168.0.111'
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -31,11 +35,34 @@ const OrderScreen = ({ history }) => {
     let { loading, error, orders, page, pages } = orderList;
     const [ords, setOrds] = useState(orders);
 
+    const headers = {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI4MDA2MTU5LCJleHAiOjE2MzA1OTgxNTl9.LOHf9jPyvudVeqRLvSZzDcXj58Yd4WQQGKSuW0Lc7Aw',
+      };
+
 
     useEffect(() => {
-        dispatch(listOrders(keyword, pageNumber));
 
-    }, [dispatch, history, userInfo, pageNumber, keyword]);
+        if (!listening) {
+            console.log('http://'+BACKEND_IP+':5000/events')
+            const events = new EventSource('http://'+BACKEND_IP+':5000/events');
+            events.onmessage = (event) => {
+              sleep(800).then(() => {
+               
+                dispatch(listOrders(keyword, pageNumber));
+
+            })
+            };
+            
+            console.log("heree")
+      
+            setListening(true);
+          }
+
+
+
+
+    }, [dispatch, history, userInfo, pageNumber, keyword
+    ]);
 
     const renderCreateButton = () => (
         <Link to="/order/create">
@@ -61,11 +88,6 @@ const OrderScreen = ({ history }) => {
         dispatch(updateOrderToPaid(updatedOrder));
         let filtered = ords.filter((item) => item.id !== ids)
         setOrds(filtered)
-
-        sleep(800).then(() => {
-            window.location.reload(false);
-
-        })
         
         //Hacer un reset y luego un filter remove
     }

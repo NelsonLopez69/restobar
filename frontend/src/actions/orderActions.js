@@ -210,7 +210,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
 
         //create order
         const { data } = await axios.post("/api/orders", order, config).then((resp) => {
-                return axios.post("http://localhost:5000/fact")
+                return axios.post("http://192.168.0.109:5000/fact")
         })
 
         dispatch({
@@ -332,7 +332,7 @@ export const updateOrderToPaid = (order) => async (dispatch, getState) => {
             order,
             config
         ).then((resp) => {
-            return axios.post("http://localhost:5000/fact")});
+            return axios.post("http://192.168.0.109:5000/fact")});
         dispatch({
             type: ORDER_UPDATE_SUCCESS,
             payload: data,
