@@ -26,6 +26,9 @@ import {
     ORDER_SALES_FAIL,
 } from "../constants/orderConstants";
 
+
+const BACKEND_IP = "192.168.0.119"
+
 //get all sales
 export const allSales = () => async (dispatch, getState) => {
     try {
@@ -210,7 +213,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
 
         //create order
         const { data } = await axios.post("/api/orders", order, config).then((resp) => {
-                return axios.post("http://192.168.0.111:5000/fact")
+                return axios.post("http://"+BACKEND_IP+":5000/fact")
         })
 
         dispatch({
@@ -290,7 +293,7 @@ export const updateOrder = (order) => async (dispatch, getState) => {
             order,
             config
         ).then((resp) => {
-            return axios.post("http://localhost:5000/fact")});
+            return axios.post("http://"+BACKEND_IP+":5000/fact")});
 
 
         dispatch({
@@ -332,7 +335,7 @@ export const updateOrderToPaid = (order) => async (dispatch, getState) => {
             order,
             config
         ).then((resp) => {
-            return axios.post("http://192.168.0.111:5000/fact")});
+            return axios.post("http://"+BACKEND_IP+":5000/fact")});
         dispatch({
             type: ORDER_UPDATE_SUCCESS,
             payload: data,
@@ -368,7 +371,7 @@ export const deleteOrder = (id) => async (dispatch, getState) => {
 
         //api call to delete order
         await axios.delete(`/api/orders/${id}`, config).then((resp) => {
-            return axios.post("http://localhost:5000/fact")});
+            return axios.post("http://"+BACKEND_IP+":5000/fact")});
 
 
         dispatch({

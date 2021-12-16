@@ -26,7 +26,7 @@ const OrderScreen = ({ history }) => {
 
     const dispatch = useDispatch();
     const [ listening, setListening ] = useState(false);
-    const BACKEND_IP='192.168.0.111'
+    const BACKEND_IP='192.168.0.119'
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
