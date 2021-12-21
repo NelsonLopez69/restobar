@@ -83,7 +83,7 @@ exports.getUser = asyncHandler(async (req, res) => {
 //@access   Private/admin
 exports.getUsers = asyncHandler(async (req, res) => {
     //pages constants
-    const pageSize = 5;
+    const pageSize = 1000;
     const page = Number(req.query.pageNumber) || 1;
     let users;
     let count;

@@ -27,7 +27,7 @@ import {
 } from "../constants/orderConstants";
 
 
-const BACKEND_IP = "192.168.0.119"
+const BACKEND_IP = "192.168.0.104"
 
 //get all sales
 export const allSales = () => async (dispatch, getState) => {
@@ -104,7 +104,7 @@ export const allActiveOrders = () => async (dispatch, getState) => {
 };
 
 //get all orders with pagination
-export const listOrders = (keyword = "", pageNumber = "") => async (
+export const listOrders = (keyword = "", pageNumber = "1") => async (
     dispatch,
     getState
 ) => {
@@ -212,9 +212,9 @@ export const createOrder = (order) => async (dispatch, getState) => {
         };
 
         //create order
-        const { data } = await axios.post("/api/orders", order, config).then((resp) => {
-                return axios.post("http://"+BACKEND_IP+":5000/fact")
-        })
+        const { data } = await axios.post("/api/orders", order, config)
+
+        //axios.post("http://"+BACKEND_IP+":5000/fact")
 
         dispatch({
             type: ORDER_CREATE_SUCCESS,

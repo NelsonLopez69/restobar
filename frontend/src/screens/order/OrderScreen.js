@@ -26,7 +26,7 @@ const OrderScreen = ({ history }) => {
 
     const dispatch = useDispatch();
     const [ listening, setListening ] = useState(false);
-    const BACKEND_IP='192.168.0.119'
+    const BACKEND_IP='192.168.0.104'
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -45,13 +45,12 @@ const OrderScreen = ({ history }) => {
         if (!listening) {
             console.log('http://'+BACKEND_IP+':5000/events')
             const events = new EventSource('http://'+BACKEND_IP+':5000/events');
-            events.onmessage = (event) => {
-              sleep(800).then(() => {
-               
-                dispatch(listOrders(keyword, pageNumber));
-
-            })
-            };
+                events.onmessage = (event) => {
+                   // sleep(800).then(() => {
+                        console.log("evento: "+JSON.parse(event.data))
+                        dispatch(listOrders(keyword, 1));
+                   // })
+                };
             
             console.log("heree")
       
@@ -71,10 +70,6 @@ const OrderScreen = ({ history }) => {
             </button>
         </Link>
     );
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-     }
 
 
     async function deleteDelivery (ids)  {

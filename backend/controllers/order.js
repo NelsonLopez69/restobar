@@ -20,13 +20,14 @@ const {
 exports.createOrder = asyncHandler(async (req, res) => {
     //get data from request
     const { total, tableId, clientId, name,  products, delivery, note } = req.body;
+    await stock(products);
 
     console.error("totl", total)
-    stock(products).then(async (stock) => {
-        if (stock) {
+
+    if (stock) {
             //create order
             const createdOrder = await Order.create({
-                total: total,
+                total,
                 tableId: 1,
                 userId: 1,
                 clientId: 1,
@@ -36,24 +37,23 @@ exports.createOrder = asyncHandler(async (req, res) => {
             });
 
             //create order products
-            addProductsInOrder(createdOrder, products);
+            await addProductsInOrder(createdOrder, products);
 
             //update table to occupied
             if (!delivery) {
-                updateTable(createdOrder.tableId, true);
+               // updateTable(createdOrder.tableId, true);
             }
 
             //update stock
-            updateProductsStock(products, -1);
+            //await updateProductsStock(products, -1);
 
             //response OK
 
-            const ans  = this.getOrders()
+            //const ans  = this.getOrders()
             res.status(201).json(createdOrder);
         } else {
             res.status(400).json({ message: "There is no stock available" });
         }
-    });
 });
 
 //@desc     Get all orders
@@ -133,69 +133,42 @@ exports.getAllSales = asyncHandler(async (req, res) => {
 //@route    GET /api/orders
 //@access   Private/user
 exports.getOrders = asyncHandler(async (req, res) => {
-    const pageSize = Number.MAX_SAFE_INTEGER;
-    const page = Number(req.query.pageNumber) || 1;
-    let orders;
-    let count;
+    if(req!==null ){
+    try {
+    
+        const pageSize = 1000;
+        const page =1;       
+         let orders;
+        let count;
 
-    const keyword = req.query.keyword ? req.query.keyword : null;
+        //const keyword = req.query.keyword ? req.query.keyword : null;
+        const keyword = false;
 
-    if (keyword) {
-        count = await Order.count({
-            include: [
-                { model: Client, as: "client" },
-                { model: Table, as: "table" },
-                { model: Product, as: "product" },
-            ],
-            where: {
-                [Op.or]: [
-                    { id: { [Op.like]: `%${keyword}%` } },
-                    { total: keyword },
-                    { "$client.name$": { [Op.like]: `%${keyword}%` } },
-                    { "$table.name$": { [Op.like]: `%${keyword}%` } },
+            count = await Order.count({});
+            orders = await Order.findAll({
+                include: [
+                    { model: Client, as: "client" },
+                    { model: Table, as: "table" },
+                    { model: Product, as: "products" },
+
                 ],
-            },
-        });
-        orders = await Order.findAll({
-            include: [
-                { model: Client, as: "client" },
-                { model: Table, as: "table" },
-            ],
-            attributes: {
-                exclude: ["userId", "clientId", "tableId", "updatedAt"],
-            },
-            where: {
-                [Op.or]: [
-                    { id: { [Op.like]: `%${keyword}%` } },
-                    { total: keyword },
-                    { "$client.name$": { [Op.like]: `%${keyword}%` } },
-                    { "$table.name$": { [Op.like]: `%${keyword}%` } },
-                ],
-            },
-            order: [["id", "ASC"]],
+                attributes: {
+                    exclude: ["userId", "clientId", "tableId", "updatedAt"],
+                },
+                order: [["id", "ASC"]],
+                offset: 1,
+                limit: pageSize,
+            });
 
-            offset: pageSize * (page - 1),
-            limit: pageSize,
-        });
-    } else {
-        count = await Order.count({});
-        orders = await Order.findAll({
-            include: [
-                { model: Client, as: "client" },
-                { model: Table, as: "table" },
-                { model: Product, as: "products" },
+        console.error(" orders: "+orders.length+" page: "+page+" pages: "+ Math.ceil(count / pageSize)+ " count"+count)
 
-            ],
-            attributes: {
-                exclude: ["userId", "clientId", "tableId", "updatedAt"],
-            },
-            order: [["id", "ASC"]],
-            offset: pageSize * (page - 1),
-            limit: pageSize,
-        });
+        res.json({ orders, page, pages: Math.ceil(count / pageSize) });
+
+    } catch(error){
+        console.error(error);
     }
-
-    res.json({ orders, page, pages: Math.ceil(count / pageSize) });
+}
+        
 });
 
 
@@ -205,7 +178,7 @@ exports.getOrders = asyncHandler(async (req, res) => {
 //@route    GET /api/orders/active
 //@access   Private/user
 exports.getActiveOrders = asyncHandler(async (req, res) => {
-    const pageSize = 5;
+    const pageSize = 1000;
     const page = Number(req.query.pageNumber) || 1;
     const delivery = req.query.delivery ? true : false;
     let orders;
