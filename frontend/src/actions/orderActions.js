@@ -27,8 +27,6 @@ import {
 } from "../constants/orderConstants";
 
 
-const BACKEND_IP = "192.168.0.104"
-
 //get all sales
 export const allSales = () => async (dispatch, getState) => {
     try {
@@ -104,7 +102,7 @@ export const allActiveOrders = () => async (dispatch, getState) => {
 };
 
 //get all orders with pagination
-export const listOrders = (keyword = "", pageNumber = "1") => async (
+export const listOrders = (keyword = "", pageNumber) => async (
     dispatch,
     getState
 ) => {
@@ -127,9 +125,10 @@ export const listOrders = (keyword = "", pageNumber = "1") => async (
 
         //get all orders
         const { data } = await axios.get(
-            `/api/orders/?keyword=${keyword}&pageNumber=${pageNumber}`,
+            `/api/orders/?keyword=${keyword}`,
             config
         );
+
 
         dispatch({
             type: ORDER_LIST_SUCCESS,
@@ -214,7 +213,6 @@ export const createOrder = (order) => async (dispatch, getState) => {
         //create order
         const { data } = await axios.post("/api/orders", order, config)
 
-        //axios.post("http://"+BACKEND_IP+":5000/fact")
 
         dispatch({
             type: ORDER_CREATE_SUCCESS,
@@ -292,8 +290,7 @@ export const updateOrder = (order) => async (dispatch, getState) => {
             `/api/orders/${order.id}`,
             order,
             config
-        ).then((resp) => {
-            return axios.post("http://"+BACKEND_IP+":5000/fact")});
+        );
 
 
         dispatch({
@@ -334,8 +331,7 @@ export const updateOrderToPaid = (order) => async (dispatch, getState) => {
             `/api/orders/${order.id}/pay`,
             order,
             config
-        ).then((resp) => {
-            return axios.post("http://"+BACKEND_IP+":5000/fact")});
+        )
         dispatch({
             type: ORDER_UPDATE_SUCCESS,
             payload: data,
@@ -370,8 +366,7 @@ export const deleteOrder = (id) => async (dispatch, getState) => {
         };
 
         //api call to delete order
-        await axios.delete(`/api/orders/${id}`, config).then((resp) => {
-            return axios.post("http://"+BACKEND_IP+":5000/fact")});
+        await axios.delete(`/api/orders/${id}`, config)
 
 
         dispatch({

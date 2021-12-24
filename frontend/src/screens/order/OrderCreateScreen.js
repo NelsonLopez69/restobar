@@ -30,6 +30,7 @@ import { allTables } from "../../actions/tableActions";
 import { allClients } from "../../actions/clientActions";
 import { createOrder } from "../../actions/orderActions";
 
+
 const OrderCreateScreen = ({ history, match }) => {
     /* Get table from url */
     const tableFromUrl = window.location.href.indexOf("table") !== -1;
@@ -113,6 +114,7 @@ const OrderCreateScreen = ({ history, match }) => {
         }
 
         if (Object.keys(errorsCheck).length === 0) {
+            
             /* Create order */
             const order = {
                 total: total,

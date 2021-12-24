@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/matias-rivera/restobar#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -47,6 +48,7 @@
     "mysql2": "^2.2.5",
     "path": "^0.12.7",
     "react-modal": "^3.14.3",
+    "reconnecting-eventsource": "^1.2.0",
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0"
   },

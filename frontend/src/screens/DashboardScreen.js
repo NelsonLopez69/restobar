@@ -304,7 +304,7 @@ const DashboardScreen = ({ history }) => {
             </thead>
             <tbody>
                 {ordersInPlace(allOrders)
-                    .splice(0, 5)
+                    .splice(0, 10)
                     .map((order) => (
                         <tr
                             key={order.id}

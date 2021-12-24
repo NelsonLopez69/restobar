@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import ReconnectingEventSource from "reconnecting-eventsource";
 
 /* Components */
 import HeaderContent from "../../components/HeaderContent";
@@ -21,12 +22,11 @@ import {
 import { listOrders } from "../../actions/orderActions";
 
 const OrderScreen = ({ history }) => {
-    const [pageNumber, setPageNumber] = useState(1);
     const [keyword, setKeyword] = useState("");
 
     const dispatch = useDispatch();
     const [ listening, setListening ] = useState(false);
-    const BACKEND_IP='192.168.0.104'
+    const BACKEND_IP='192.168.0.118'
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -39,28 +39,31 @@ const OrderScreen = ({ history }) => {
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI4MDA2MTU5LCJleHAiOjE2MzA1OTgxNTl9.LOHf9jPyvudVeqRLvSZzDcXj58Yd4WQQGKSuW0Lc7Aw',
       };
 
-
     useEffect(() => {
 
-        if (!listening) {
-            console.log('http://'+BACKEND_IP+':5000/events')
-            const events = new EventSource('http://'+BACKEND_IP+':5000/events');
+        if (true) {
+            const events = new ReconnectingEventSource('http://'+BACKEND_IP+':5000/events');
                 events.onmessage = (event) => {
-                   // sleep(800).then(() => {
-                        console.log("evento: "+JSON.parse(event.data))
-                        dispatch(listOrders(keyword, 1));
+
+                    //sleep(800).then(() => {
+                        console.log("wantit: "+event)
+                        dispatch(listOrders("", 1));
                    // })
                 };
             
             console.log("heree")
-      
-            setListening(true);
+            let paid = orders.filter(ord => !ord.isPaid)
+            console.log("evento: "+paid.length); 
+
+            //if(paid.length!== 0 && paid.length%4==0) window.location.reload(false);
+                    
+
+            //setListening(true);
           }
+          
 
 
-
-
-    }, [dispatch, history, userInfo, pageNumber, keyword
+    }, [dispatch, history, userInfo, keyword
     ]);
 
     const renderCreateButton = () => (
@@ -70,6 +73,7 @@ const OrderScreen = ({ history }) => {
             </button>
         </Link>
     );
+
 
 
     async function deleteDelivery (ids)  {
@@ -141,7 +145,6 @@ const OrderScreen = ({ history }) => {
                         <Search
                             keyword={keyword}
                             setKeyword={setKeyword}
-                            setPage={setPageNumber}
                         />
                     </div>
                 </div>
@@ -157,7 +160,6 @@ const OrderScreen = ({ history }) => {
                 {/* /.card-body */}
             </div>
 
-            <Pagination page={page} pages={pages} setPage={setPageNumber} />
         </>
     );
 
