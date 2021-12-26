@@ -106,7 +106,6 @@ const ActiveOrdersScreen = ({ history }) => {
                     <th>ID</th>
                     <th>Cliente</th>
                     <th>Precio</th>
-                    <th>Observaciones</th>
                     <th></th>
                 </tr>
             </thead>
@@ -121,7 +120,6 @@ const ActiveOrdersScreen = ({ history }) => {
                                 ${order.total}
                             </span>
                         </td>
-                        <td>{order.note}</td>
                         <td>
                             <Link
                                 to={`/order/${order.id}/view`}
