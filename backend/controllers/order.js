@@ -355,13 +355,13 @@ exports.updateOrder = asyncHandler(async (req, res) => {
         include: { all: true, nested: true },
     });
 
-    const { total, clientId, name, tableId, delivery, products, note } = req.body;
+    const { total, clientId, name, isPaid, tableId, delivery, products, note } = req.body;
 
     if (order) {
-        console.log('orderis: ', name)
 
         order.clientId = clientId;
         order.name = name
+        order.isPaid = isPaid;
         order.delivery = delivery;
         order.note = note;
 
@@ -407,6 +407,7 @@ exports.updateOrder = asyncHandler(async (req, res) => {
             }
         }
         order.total = total;
+        console.log("maname3:"+order.isPaid)
         const updatedOrder = await order.save().then(err => {
             console.log("mala3:"+err)
             axios.post("http://localhost:5000/fact")
@@ -471,7 +472,11 @@ exports.deleteOrder = asyncHandler(async (req, res) => {
     const order = await Order.findByPk(req.params.id);
 
     if (order) {
-        await order.destroy();
+        await order.destroy().then(err => {
+            console.log("mala4:"+err)
+            axios.post("http://localhost:5000/fact")
+
+        });;
         res.json({ message: "Order removed" });
     } else {
         res.status(404);

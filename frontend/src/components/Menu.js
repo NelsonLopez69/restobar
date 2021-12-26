@@ -89,7 +89,7 @@ const Menu = ({ history }) => {
                         <li className="nav-item">
                             <Link to="/active" className="nav-link">
                                 <i className="nav-icon fas fa-bell" />{" "}
-                                <p> Pedidos Activos</p>
+                                <p> Historial de Pedidos</p>
                             </Link>
                         </li>
 

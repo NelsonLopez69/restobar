@@ -26,7 +26,7 @@ const OrderScreen = ({ history }) => {
 
     const dispatch = useDispatch();
     const [ listening, setListening ] = useState(false);
-    const BACKEND_IP='192.168.0.118'
+    const BACKEND_IP='192.168.0.119'
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -123,6 +123,7 @@ const OrderScreen = ({ history }) => {
                             </Link>
                         </td>
 
+                        <td>
                         <Link to="/order">
                             <button className="btn btn-success btn-lg"
                             onClick ={() => deleteDelivery(order.id)}>
@@ -130,6 +131,8 @@ const OrderScreen = ({ history }) => {
                                 <i className="fas fa-edit" /> Entregado
                             </button>
                         </Link>
+                        </td>
+
                     </tr>
                 ))}
             </tbody>

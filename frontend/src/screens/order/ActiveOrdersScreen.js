@@ -4,6 +4,13 @@ import { Link } from "react-router-dom";
 import DataTableLoader from "../../components/loader/DataTableLoader";
 import Pagination from "../../components/Pagination";
 import axios from "axios";
+import ReconnectingEventSource from "reconnecting-eventsource";
+import {
+    listOrderDetails,
+    updateOrderToPaid,
+    listOrders, deleteOrder, updateOrder
+} from "../../actions/orderActions";
+
 
 
 
@@ -17,7 +24,8 @@ import {
 } from "../../components/loader/SkeletonLoaders";
 
 /* actions */
-import { listOrderDetails, listOrders } from "../../actions/orderActions";
+
+    const BACKEND_IP='192.168.0.119'
 
 
 const ActiveOrdersScreen = ({ history }) => {
@@ -31,53 +39,128 @@ const ActiveOrdersScreen = ({ history }) => {
 
     const orderList = useSelector((state) => state.orderList);
     const { loading, error, orders, page, pages } = orderList;
+    const [ords, setOrds] = useState(orders);
+
 
     useEffect(() => {
 
+        if (true) {
+            const events = new ReconnectingEventSource('http://'+BACKEND_IP+':5000/events');
+                events.onmessage = (event) => {
 
-            const headers = {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI4MDA2MTU5LCJleHAiOjE2MzA1OTgxNTl9.LOHf9jPyvudVeqRLvSZzDcXj58Yd4WQQGKSuW0Lc7Aw',
-            };
-            
-             axios.get('http://localhost:5000/api/orders/14', { headers })
-            .then(response => setProducts(response.data)).catch(err => console.log(err));
+                    //sleep(800).then(() => {
+                        console.log("wantit: "+event)
+                        dispatch(listOrders("", 1));
+                   // })
+                };
+        
 
-    }, []);
+            //if(paid.length!== 0 && paid.length%4==0) window.location.reload(false);
+                    
 
-
-
-    function renderTable() {
-        let cliente = ''
-        let pedido = ''
-        let observaciones = ''
+            //setListening(true);
+          }
+          
 
 
+    }, [dispatch, history, userInfo, keyword
+    ]);
+
+    async function deleteDelivery (ids)  {
+        // e.preventDefault();
+         console.log("resB: "+orders.length )
+  
+          const updatedOrder = {
+              id: ids,
+          };
+          
+          dispatch(deleteOrder(ids));
+          let filtered = ords.filter((item) => item.id !== ids)
+          setOrds(filtered)
+          
+          //Hacer un reset y luego un filter remove
+      }
 
 
-        return (
-            <table className="table table-hover text-nowrap">
+    async function unpayOrder (order)  {
+        // e.preventDefault();
+        console.log('maname1: '+order.isPaid)
+
+            order.isPaid = false;
+          
+          dispatch(updateOrder(order));
+        let filtered = ords.filter((item) => item.id !== order.id
+        )
+          setOrds(filtered)
+          
+          //Hacer un reset y luego un filter remove
+      }
+
+
+
+
+    const renderTable = () => (
+        <table className="table table-hover text-nowrap">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Cliente</th>
-                    <th>Pedido</th>
+                    <th>Precio</th>
                     <th>Observaciones</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {orders.filter(ord => !ord.isPaid).map((order) => (
+                {orders.reverse().filter(ord => ord.isPaid).map((order) => (
                     <tr key={order.id}>
+                        <td>{order.id}</td>
                         <td>{order.name}</td>
 
-                        <td>{}</td>
-
+                        <td className="d-none d-sm-table-cell h4">
+                            <span className={"badge bg-success"}>
+                                ${order.total}
+                            </span>
+                        </td>
                         <td>{order.note}</td>
+                        <td>
+                            <Link
+                                to={`/order/${order.id}/view`}
+                                className="btn btn-info btn-lg"
+                            >
+                                Ver
+                            </Link>
+                        </td>
+
+                        <td>
+                            <Link 
+                                    to={"/active"}
+                                    className="btn btn-info btn-lg"
+                                    onClick ={() => deleteDelivery(order.id)}
+                                    style={{ backgroundColor: '#cc0000'}}
+                                    
+                                    > Eliminar
+                            </Link>
+                        </td>
+
+                        <td>
+                            <Link 
+                                
+                                to="/active"
+                                className="btn btn-info btn-lg"
+
+                                onClick ={() => unpayOrder(order)}
+                                style={{ backgroundColor: '#ffc000',
+                                         color: "black"}}
+                                >
+                                    
+                                 Devolver
+                            </Link>
+                        </td>
                     </tr>
                 ))}
             </tbody>
         </table>
-        )
-    }
+    );
 
     function getProducts (orderId) {
         const headers = {
@@ -115,7 +198,7 @@ const ActiveOrdersScreen = ({ history }) => {
 
     return (
         <>
-            <HeaderContent name={'Pedidos'} />
+            <HeaderContent name={'Historial de Pedidos'} />
 
             <section className="content">
                 <div className="container-fluid">

@@ -267,7 +267,6 @@ export const listOrderDetails = (id) => async (dispatch, getState) => {
 //update a order
 export const updateOrder = (order) => async (dispatch, getState) => {
     try {
-        console.log('maname')
 
         dispatch({
             type: ORDER_UPDATE_REQUEST,
@@ -284,6 +283,9 @@ export const updateOrder = (order) => async (dispatch, getState) => {
                // Authorization: `Bearer ${userInfo.token}`,
             },
         };
+
+
+        console.log('maname2: '+order.isPaid)
 
         //update order
         const { data } = await axios.put(
